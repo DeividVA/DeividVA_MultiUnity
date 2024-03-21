@@ -399,6 +399,16 @@ MonoBehaviour:
       MethodName: StartTutorial
       Parameters: []
       Flags: 36
+  - Name: StartHost
+    Description: 
+    TargetType: 0
+    Group: Default
+    SerializableMethod:
+      Type:
+        Data: 0056436f6d6d616e6448656c706572732c20417373656d626c792d4353686172702c2056657273696f6e3d302e302e302e302c2043756c747572653d6e65757472616c2c205075626c69634b6579546f6b656e3d6e756c6c
+      MethodName: StartHost
+      Parameters: []
+      Flags: 36
   - Name: stop_tutorial
     Description: stop the tutorial
     TargetType: 0

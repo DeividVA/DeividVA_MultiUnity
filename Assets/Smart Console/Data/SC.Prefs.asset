@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SC.Prefs
   m_EditorClassIdentifier: 
   GlobalFont: {fileID: 11400000, guid: f3eaa9d832e80044a8a20aa5ee0f8a7b, type: 2}
-  Opacity: 1
+  Opacity: 0.483
   LogTextFontSize: 28
   AutocompleteTextFontSize: 24
   LogTextColor: {r: 0.867, g: 0.867, b: 0.867, a: 1}
