@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 8841073241415293096}
   - component: {fileID: -4498622390334263413}
   - component: {fileID: -4514138517334363727}
+  - component: {fileID: -1914598973606922426}
   m_Layer: 0
-  m_Name: Isometric Diamond
+  m_Name: avatar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -119,3 +120,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d61a037042ee854fbc54eaddd8fb7d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-1914598973606922426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2999851179947706268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61fa9f82ddf4fda4c8f285ebac6ac0b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseUnreliableDeltas: 0
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 1
+  SyncScaleY: 1
+  SyncScaleZ: 1
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  Interpolate: 1
+  SlerpPosition: 0
