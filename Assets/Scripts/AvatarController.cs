@@ -17,6 +17,14 @@ public class AvatarController : NetworkBehaviour
     private NetworkVariable<Color> m_Color = new NetworkVariable<Color>(Color.black,
         NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
+
+    private static NetworkVariable<Vector3> l_Position = new NetworkVariable<Vector3>(Vector3.zero,
+    NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+    private static NetworkVariable<Vector3> r_Position = new NetworkVariable<Vector3>(Vector3.zero,
+    NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -73,12 +81,18 @@ public class AvatarController : NetworkBehaviour
         door.GetComponent<NetworkObject>().Spawn();
     }
 
+    [ServerRpc(RequireOwnership = false)]
     void SpawnButtonsServerRpc()
     {
         SmartConsole.Log("spawn buttons");
-        GameObject door = Instantiate(buttonPrefab, m_Position.Value, Quaternion.identity);
-        m_Position.Value += Vector3.right + Vector3.up;
-        door.GetComponent<NetworkObject>().Spawn();
+        GameObject button1 = Instantiate(buttonPrefab, l_Position.Value, Quaternion.identity);
+        GameObject button2 = Instantiate(buttonPrefab, r_Position.Value, Quaternion.identity);
+
+        l_Position.Value += Vector3.left;
+        r_Position.Value += Vector3.right;
+
+        button1.GetComponent<NetworkObject>().Spawn();
+        button2.GetComponent<NetworkObject>().Spawn();
 
     }
 
