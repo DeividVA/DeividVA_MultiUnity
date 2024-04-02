@@ -4,6 +4,7 @@ using ED.SC;
 using Unity.Mathematics;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class AvatarController : NetworkBehaviour
 {
@@ -23,6 +24,8 @@ public class AvatarController : NetworkBehaviour
 
     private static NetworkVariable<Vector3> r_Position = new NetworkVariable<Vector3>(Vector3.zero,
     NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+    private static NetworkVariable<int> doorCount = new NetworkVariable<int>(0);
 
 
     // Start is called before the first frame update
@@ -63,7 +66,10 @@ public class AvatarController : NetworkBehaviour
         // if you need to change something not in transform, it's needed RPC calling
         // RPC calling executes the method in several clients (specified by RpcTarget)
         // if (Input.GetKeyDown(KeyCode.RightControl)) m_Color.Value = m_Colors[2];
-        if (Input.GetKeyDown(KeyCode.RightControl)) SpawnDoorServerRpc();
+        //if (Input.GetKeyDown(KeyCode.RightControl)) SpawnDoorServerRpc();
+
+        if (doorCount.Value == 2) SpawnDoorServerRpc();
+
     }
 
     void LerpPosition(Vector3 offset, float speed)
@@ -88,13 +94,21 @@ public class AvatarController : NetworkBehaviour
         GameObject button1 = Instantiate(buttonPrefab, l_Position.Value, Quaternion.identity);
         GameObject button2 = Instantiate(buttonPrefab, r_Position.Value, Quaternion.identity);
 
-        l_Position.Value += Vector3.left;
-        r_Position.Value += Vector3.right;
+        l_Position.Value += Vector3.left * 3;
+        r_Position.Value += Vector3.right * 3;
 
         button1.GetComponent<NetworkObject>().Spawn();
         button2.GetComponent<NetworkObject>().Spawn();
 
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        collision.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        doorCount.Value++;
+        SmartConsole.Log($"Door is {doorCount}");
+    }
+
 
 
     // [ServerRpc(RequireOwnership = false)]
