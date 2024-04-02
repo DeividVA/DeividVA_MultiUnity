@@ -9,6 +9,7 @@ public class AvatarController : NetworkBehaviour
 {
     [SerializeField] private float movementSpeed = 3.0f;
     [SerializeField] private GameObject doorPrefab;
+    [SerializeField] private GameObject buttonPrefab;
     private readonly List<Color> m_Colors = new List<Color>() { Color.blue, Color.green, Color.red };
     private SpriteRenderer m_Renderer;
     private static NetworkVariable<Vector3> m_Position = new NetworkVariable<Vector3>(Vector3.zero,
@@ -33,6 +34,7 @@ public class AvatarController : NetworkBehaviour
         // assign initial color to network variable
         if (IsOwner) m_Color.Value = m_Colors[(int)OwnerClientId];
         //ChangeColorServerRpc(m_Colors[(int) OwnerClientId]);
+        if (IsHost) SpawnButtonsServerRpc();
     }
 
     // Update is called once per frame
@@ -69,6 +71,15 @@ public class AvatarController : NetworkBehaviour
         GameObject door = Instantiate(doorPrefab, m_Position.Value, Quaternion.identity);
         m_Position.Value += Vector3.right + Vector3.up;
         door.GetComponent<NetworkObject>().Spawn();
+    }
+
+    void SpawnButtonsServerRpc()
+    {
+        SmartConsole.Log("spawn buttons");
+        GameObject door = Instantiate(buttonPrefab, m_Position.Value, Quaternion.identity);
+        m_Position.Value += Vector3.right + Vector3.up;
+        door.GetComponent<NetworkObject>().Spawn();
+
     }
 
 
