@@ -16,4 +16,9 @@ public class CommandHelper : MonoBehaviour
     {
         NetworkManager.Singleton.StartClient();
     }
+    [Command]
+    void StartServer()
+    {
+        NetworkManager.Singleton.StartServer();
+    }
 }
