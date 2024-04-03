@@ -25,7 +25,7 @@ public class AvatarController : NetworkBehaviour
     private static NetworkVariable<Vector3> r_Position = new NetworkVariable<Vector3>(Vector3.zero,
     NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
-    private static NetworkVariable<int> doorCount = new NetworkVariable<int>(0);
+    private static NetworkVariable<int> doorCount = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
 
     // Start is called before the first frame update
@@ -45,7 +45,12 @@ public class AvatarController : NetworkBehaviour
         // assign initial color to network variable
         if (IsOwner) m_Color.Value = m_Colors[(int)OwnerClientId];
         //ChangeColorServerRpc(m_Colors[(int) OwnerClientId]);
-        if (IsHost) SpawnButtonsServerRpc();
+        if (IsServer && IsOwner) 
+        {
+            SpawnButtonsServerRpc();
+            SmartConsole.Log("Initializing buttons");
+        }
+        
     }
 
     // Update is called once per frame
@@ -68,7 +73,7 @@ public class AvatarController : NetworkBehaviour
         // if (Input.GetKeyDown(KeyCode.RightControl)) m_Color.Value = m_Colors[2];
         //if (Input.GetKeyDown(KeyCode.RightControl)) SpawnDoorServerRpc();
 
-        if (doorCount.Value == 2) SpawnDoorServerRpc();
+
 
     }
 
@@ -81,32 +86,65 @@ public class AvatarController : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     void SpawnDoorServerRpc()
     {
+
+        m_Position.Value += Vector3.up * 3;
         SmartConsole.Log("spawn door");
         GameObject door = Instantiate(doorPrefab, m_Position.Value, Quaternion.identity);
-        m_Position.Value += Vector3.right + Vector3.up;
+
         door.GetComponent<NetworkObject>().Spawn();
     }
 
     [ServerRpc(RequireOwnership = false)]
     void SpawnButtonsServerRpc()
     {
+
+        l_Position.Value += Vector3.left * 5;
+        r_Position.Value += Vector3.right * 5;
+
         SmartConsole.Log("spawn buttons");
         GameObject button1 = Instantiate(buttonPrefab, l_Position.Value, Quaternion.identity);
         GameObject button2 = Instantiate(buttonPrefab, r_Position.Value, Quaternion.identity);
 
-        l_Position.Value += Vector3.left * 3;
-        r_Position.Value += Vector3.right * 3;
 
         button1.GetComponent<NetworkObject>().Spawn();
         button2.GetComponent<NetworkObject>().Spawn();
 
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+
+    [ServerRpc(RequireOwnership = false)]
+    void DoorCountIncreasingServerRpc()
     {
-        collision.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+
         doorCount.Value++;
-        SmartConsole.Log($"Door is {doorCount}");
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void DoorCountDecreasingServerRpc()
+    {
+
+        doorCount.Value--;
+    }
+
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!IsServer) return;
+        
+        //collision.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        DoorCountIncreasingServerRpc();
+        SmartConsole.Log($"Door is {doorCount.Value}");
+        if (doorCount.Value == 2) SpawnDoorServerRpc();
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (!IsServer) return;
+
+        //collision.gameObject.GetComponent<BoxCollider2D>().enabled = true;
+        DoorCountDecreasingServerRpc();
+        SmartConsole.Log($"Door is {doorCount.Value}");
+        //if (doorCount.Value >= 2) SpawnDoorServerRpc();
     }
 
 
